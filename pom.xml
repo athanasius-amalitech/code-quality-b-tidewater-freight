@@ -19,7 +19,9 @@
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <checkstyle.version>10.21.4</checkstyle.version>
         <formatter.plugin.version>2.24.1</formatter.plugin.version>
-        <formatter.profile.url>https://raw.githubusercontent.com/athanasius-amalitech/vscode-java-formatter/main/eclipse-java-formatter.xml</formatter.profile.url>
+        <!-- Pinned to one commit of the shared profile, so the build is reproducible.
+             Move the pin on purpose when the profile changes. -->
+        <formatter.profile.url>https://raw.githubusercontent.com/athanasius-amalitech/vscode-java-formatter/3e91738399f339429e9ae77e8e52be0555d18aa8/eclipse-java-formatter.xml</formatter.profile.url>
         <exec.plugin.version>3.5.0</exec.plugin.version>
     </properties>
 
