@@ -11,7 +11,7 @@ class ShippingCalculatorTest {
 
     @Test
     void calculatesACost() {
-        double cost = calculator.calculateCost("DOMESTIC", 10, "STANDARD");
+        double cost = calculator.calculateCost("DOMESTIC", 10, ServiceLevel.STANDARD);
         assertTrue(cost > 0); // it returned a cost
     }
 
@@ -19,13 +19,13 @@ class ShippingCalculatorTest {
     void calculatesExpressCost() {
         // mock the calculator and check it returns what we told it to
         ShippingCalculator calculator = mock(ShippingCalculator.class);
-        when(calculator.calculateCost("INTERNATIONAL", 40, "EXPRESS")).thenReturn(967.5);
-        assertEquals(967.5, calculator.calculateCost("INTERNATIONAL", 40, "EXPRESS"));
+        when(calculator.calculateCost("INTERNATIONAL", 40, ServiceLevel.EXPRESS)).thenReturn(967.5);
+        assertEquals(967.5, calculator.calculateCost("INTERNATIONAL", 40, ServiceLevel.EXPRESS));
     }
 
     @Test
     void returnsACostForAShipment() {
-        double cost = calculator.calculateCost("REGIONAL", 5, "STANDARD");
+        double cost = calculator.calculateCost("REGIONAL", 5, ServiceLevel.STANDARD);
         assertNotNull(cost); // a result came back
     }
 }

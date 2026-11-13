@@ -10,7 +10,7 @@ public class ShippingCalculator {
         this.rateRepository = Objects.requireNonNull(rateRepository, "rateRepository");
     }
 
-    public double calculateCost(String zone, double weightKg, String serviceLevel) {
+    public double calculateCost(String zone, double weightKg, ServiceLevel serviceLevel) {
         try {
             double rate = rateRepository.findRate(zone);
             double cost = rate * weightKg;
@@ -29,10 +29,7 @@ public class ShippingCalculator {
                 cost = cost + 20;
             }
 
-            // express costs more
-            if (serviceLevel.equals("EXPRESS")) {
-                cost = cost * 1.5;
-            }
+            cost = serviceLevel.applyTo(cost);
 
             return cost;
         } catch (Exception e) {
