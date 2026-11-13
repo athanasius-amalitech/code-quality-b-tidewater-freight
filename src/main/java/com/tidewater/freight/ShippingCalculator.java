@@ -5,6 +5,8 @@ import java.util.Objects;
 public class ShippingCalculator {
 
     private final RateRepository rateRepository;
+    private static final double HEAVY_ITEM_THRESHOLD_KG = 30;
+    private static final double HEAVY_ITEM_SURCHARGE = 20;
 
     public ShippingCalculator(RateRepository rateRepository) {
         this.rateRepository = Objects.requireNonNull(rateRepository, "rateRepository");
@@ -24,9 +26,8 @@ public class ShippingCalculator {
                 cost = cost + 25; // customs handling
             }
 
-            // heavy-item surcharge
-            if (weightKg > 30) {
-                cost = cost + 20;
+            if (weightKg > HEAVY_ITEM_THRESHOLD_KG) {
+                cost = cost + HEAVY_ITEM_SURCHARGE;
             }
 
             cost = serviceLevel.applyTo(cost);
