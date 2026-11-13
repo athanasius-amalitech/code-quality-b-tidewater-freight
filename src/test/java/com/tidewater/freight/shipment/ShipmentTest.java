@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class ShipmentTest {
 
     @ParameterizedTest
-    @ValueSource(doubles = { 0, -10, Double.NaN, Double.POSITIVE_INFINITY })
+    @ValueSource(doubles = {0, -10, Double.NaN, Double.POSITIVE_INFINITY})
     void rejectsWeightThatIsNotPositiveAndFinite(double weightKg) {
         InvalidShipmentException exception = assertThrows(InvalidShipmentException.class,
                 () -> new Shipment("DOMESTIC", weightKg, ServiceLevel.STANDARD));
@@ -22,7 +22,7 @@ class ShipmentTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = { "   " })
+    @ValueSource(strings = {"   "})
     void rejectsMissingZone(String zone) {
         assertThrows(
                 InvalidShipmentException.class,
