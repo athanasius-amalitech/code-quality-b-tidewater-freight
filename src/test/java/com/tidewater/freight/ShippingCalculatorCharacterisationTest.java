@@ -75,7 +75,7 @@ class ShippingCalculatorCharacterisationTest {
         assertEquals(new BigDecimal("170.50"), cost);
     }
 
-    @Test 
+    @Test
     void roundsPriceToTwoDecimalPlaces() {
         BigDecimal cost = calculator
                 .calculateCost(new Shipment("REGIONAL", 2.3, ServiceLevel.EXPRESS));

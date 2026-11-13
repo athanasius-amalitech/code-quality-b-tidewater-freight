@@ -1,16 +1,18 @@
 package com.tidewater.freight;
 
+import java.math.BigDecimal;
+
 public enum ServiceLevel {
-    STANDARD(1.0),
-    EXPRESS(1.5);
+    STANDARD(new BigDecimal("1.0")),
+    EXPRESS(new BigDecimal("1.5"));
 
-    private final double priceMultiplier;
+    private final BigDecimal priceMultiplier;
 
-    ServiceLevel(double priceMultiplier) {
+    ServiceLevel(BigDecimal priceMultiplier) {
         this.priceMultiplier = priceMultiplier;
     }
 
-    public double applyTo(double cost) {
-        return cost * priceMultiplier;
+    public BigDecimal applyTo(BigDecimal cost) {
+        return cost.multiply(priceMultiplier);
     }
 }
