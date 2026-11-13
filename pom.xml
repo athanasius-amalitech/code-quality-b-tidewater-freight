@@ -56,7 +56,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <finalName>tidewater-freight</finalName>
         <plugins>
@@ -66,11 +65,18 @@
                 <version>3.2.5</version>
             </plugin>
 
-            <!-- Coverage: mvn verify, then open target/site/jacoco/index.html -->
+            <!-- Coverage gate: runs in mvn verify and fails below 100% line and branch
+                 coverage (Demo excluded). Report: target/site/jacoco/index.html -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+                <configuration>
+                    <!-- The demo only prints example prices; it holds no business logic -->
+                    <excludes>
+                        <exclude>com/tidewater/freight/demo/**</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -85,11 +91,37 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>coverage-gate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>1.00</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>1.00</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
-            <!-- Mutation testing: mvn test-compile org.pitest:pitest-maven:mutationCoverage
-                 then open target/pit-reports/index.html -->
+            <!-- Mutation gate: runs in mvn verify and fails below 90% killed mutants.
+                 Report: target/pit-reports/index.html -->
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -101,8 +133,6 @@
                         <version>${pitest.junit5.version}</version>
                     </dependency>
                 </dependencies>
-
-
                 <executions>
                     <execution>
                         <id>mutation-gate</id>
@@ -112,7 +142,6 @@
                         </goals>
                     </execution>
                 </executions>
-
                 <configuration>
                     <targetClasses>
                         <param>com.tidewater.freight.*</param>
@@ -124,8 +153,6 @@
                     <excludedClasses>
                         <param>com.tidewater.freight.demo.*</param>
                     </excludedClasses>
-
-
                     <mutationThreshold>90</mutationThreshold>
                 </configuration>
             </plugin>
