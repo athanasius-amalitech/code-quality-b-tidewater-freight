@@ -1,4 +1,4 @@
-package com.tidewater.freight.exceptions;
+package com.tidewater.freight;
 
 public abstract class ShippingException extends RuntimeException {
 

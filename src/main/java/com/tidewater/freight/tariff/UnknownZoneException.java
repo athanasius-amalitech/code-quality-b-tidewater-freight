@@ -1,4 +1,6 @@
-package com.tidewater.freight.exceptions;
+package com.tidewater.freight.tariff;
+
+import com.tidewater.freight.ShippingException;
 
 public class UnknownZoneException extends ShippingException {
 

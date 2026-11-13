@@ -1,6 +1,4 @@
-package com.tidewater.freight;
-
-import com.tidewater.freight.exceptions.InvalidShipmentException;
+package com.tidewater.freight.shipment;
 
 public record Shipment(String zone, double weightKg, ServiceLevel serviceLevel) {
     public Shipment {

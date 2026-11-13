@@ -1,4 +1,4 @@
-package com.tidewater.freight;
+package com.tidewater.freight.pricing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,7 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.tidewater.freight.exceptions.UnknownZoneException;
+import com.tidewater.freight.shipment.ServiceLevel;
+import com.tidewater.freight.shipment.Shipment;
+import com.tidewater.freight.tariff.FlatRateTariff;
+import com.tidewater.freight.tariff.TariffRepository;
+import com.tidewater.freight.tariff.UnknownZoneException;
 
 @ExtendWith(MockitoExtension.class)
 class ShippingCalculatorTest {

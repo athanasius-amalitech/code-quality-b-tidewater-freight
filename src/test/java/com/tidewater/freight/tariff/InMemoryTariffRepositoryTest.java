@@ -1,11 +1,9 @@
-package com.tidewater.freight;
+package com.tidewater.freight.tariff;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
-
-import com.tidewater.freight.exceptions.UnknownZoneException;
 
 class InMemoryTariffRepositoryTest {
 

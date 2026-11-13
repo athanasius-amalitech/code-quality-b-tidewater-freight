@@ -1,4 +1,4 @@
-package com.tidewater.freight;
+package com.tidewater.freight.tariff;
 
 import java.math.BigDecimal;
 

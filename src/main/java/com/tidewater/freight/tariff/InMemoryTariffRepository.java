@@ -1,10 +1,8 @@
-package com.tidewater.freight;
+package com.tidewater.freight.tariff;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.tidewater.freight.exceptions.UnknownZoneException;
 
 public class InMemoryTariffRepository implements TariffRepository {
 

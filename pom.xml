@@ -103,6 +103,10 @@
                     <targetTests>
                         <param>com.tidewater.freight.*</param>
                     </targetTests>
+                    <!-- The demo only prints example prices; it holds no business logic -->
+                    <excludedClasses>
+                        <param>com.tidewater.freight.demo.*</param>
+                    </excludedClasses>
                 </configuration>
             </plugin>
         </plugins>

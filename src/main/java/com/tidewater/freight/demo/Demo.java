@@ -1,6 +1,11 @@
-package com.tidewater.freight;
+package com.tidewater.freight.demo;
 
-import com.tidewater.freight.exceptions.ShippingException;
+import com.tidewater.freight.ShippingException;
+import com.tidewater.freight.pricing.ShippingCalculator;
+import com.tidewater.freight.shipment.ServiceLevel;
+import com.tidewater.freight.shipment.Shipment;
+import com.tidewater.freight.tariff.InMemoryTariffRepository;
+import com.tidewater.freight.tariff.TariffRepository;
 
 public class Demo {
     public static void main(String[] args) {
