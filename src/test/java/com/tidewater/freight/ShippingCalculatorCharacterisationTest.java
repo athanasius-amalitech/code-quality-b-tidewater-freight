@@ -2,6 +2,8 @@ package com.tidewater.freight;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 
 class ShippingCalculatorCharacterisationTest {
@@ -11,61 +13,74 @@ class ShippingCalculatorCharacterisationTest {
 
     @Test
     void chargesBaseRateOnlyForDomestic() {
-        double cost = calculator.calculateCost(new Shipment("DOMESTIC", 10, ServiceLevel.STANDARD));
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("DOMESTIC", 10, ServiceLevel.STANDARD));
 
-        assertEquals(50, cost, 0.001);
+        assertEquals(new BigDecimal("50.00"), cost);
     }
 
     @Test
     void addsHandlingFeeForRegional() {
-        double cost = calculator.calculateCost(new Shipment("REGIONAL", 5, ServiceLevel.STANDARD));
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("REGIONAL", 5, ServiceLevel.STANDARD));
 
-        assertEquals(50, cost, 0.001);
+        assertEquals(new BigDecimal("50.00"), cost);
     }
 
     @Test
     void addsCustomsFeeForInternational() {
-        double cost = calculator
+        BigDecimal cost = calculator
                 .calculateCost(new Shipment("INTERNATIONAL", 10, ServiceLevel.STANDARD));
 
-        assertEquals(175, cost, 0.001);
+        assertEquals(new BigDecimal("175.00"), cost);
     }
 
     @Test
     void multipliesTotalForExpress() {
-        double cost = calculator.calculateCost(new Shipment("DOMESTIC", 10, ServiceLevel.EXPRESS));
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("DOMESTIC", 10, ServiceLevel.EXPRESS));
 
-        assertEquals(75, cost, 0.001);
+        assertEquals(new BigDecimal("75.00"), cost);
     }
 
     @Test
     void addsHeavySurchargeOverThirtyKg() {
-        double cost = calculator.calculateCost(new Shipment("DOMESTIC", 40, ServiceLevel.STANDARD));
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("DOMESTIC", 40, ServiceLevel.STANDARD));
 
-        assertEquals(220, cost, 0.001);
+        assertEquals(new BigDecimal("220.00"), cost);
     }
 
     @Test
     void appliesExpressAfterFeesAndSurcharge() {
-        double cost = calculator
+        BigDecimal cost = calculator
                 .calculateCost(new Shipment("INTERNATIONAL", 40, ServiceLevel.EXPRESS));
 
-        assertEquals(967.5, cost, 0.001);
+        assertEquals(new BigDecimal("967.50"), cost);
     }
 
     @Test
     void noHeavySurchargeAtExactlyThirtyKg() {
-        double cost = calculator.calculateCost(new Shipment("DOMESTIC", 30, ServiceLevel.STANDARD));
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("DOMESTIC", 30, ServiceLevel.STANDARD));
 
-        assertEquals(150, cost, 0.001);
+        assertEquals(new BigDecimal("150.00"), cost);
     }
 
     @Test
     void addsHeavySurchargeJustOverThirtyKg() {
-        double cost = calculator
+        BigDecimal cost = calculator
                 .calculateCost(new Shipment("DOMESTIC", 30.1, ServiceLevel.STANDARD));
 
-        assertEquals(170.5, cost, 0.001);
+        assertEquals(new BigDecimal("170.50"), cost);
+    }
+
+    @Test 
+    void roundsPriceToTwoDecimalPlaces() {
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("REGIONAL", 2.3, ServiceLevel.EXPRESS));
+
+        assertEquals(new BigDecimal("42.60"), cost);
     }
 
 }
