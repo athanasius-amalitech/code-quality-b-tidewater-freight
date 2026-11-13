@@ -11,7 +11,8 @@ public record Shipment(String zone, double weightKg, ServiceLevel serviceLevel) 
             throw new InvalidShipmentException("Service level cannot be null");
         }
         if (!Double.isFinite(weightKg) || weightKg <= 0) {
-            throw new InvalidShipmentException("Weight must be positive and finite, was " + weightKg);
+            throw new InvalidShipmentException(
+                    "Weight must be positive and finite, was " + weightKg);
         }
     }
 }

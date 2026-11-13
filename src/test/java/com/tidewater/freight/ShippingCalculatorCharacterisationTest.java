@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 class ShippingCalculatorCharacterisationTest {
 
-    private final ShippingCalculator calculator = new ShippingCalculator(new InMemoryTariffRepository());
+    private final ShippingCalculator calculator = new ShippingCalculator(
+            new InMemoryTariffRepository());
 
     @Test
     void chargesBaseRateOnlyForDomestic() {
@@ -24,7 +25,8 @@ class ShippingCalculatorCharacterisationTest {
 
     @Test
     void addsCustomsFeeForInternational() {
-        double cost = calculator.calculateCost(new Shipment("INTERNATIONAL", 10, ServiceLevel.STANDARD));
+        double cost = calculator
+                .calculateCost(new Shipment("INTERNATIONAL", 10, ServiceLevel.STANDARD));
 
         assertEquals(175, cost, 0.001);
     }
@@ -45,7 +47,8 @@ class ShippingCalculatorCharacterisationTest {
 
     @Test
     void appliesExpressAfterFeesAndSurcharge() {
-        double cost = calculator.calculateCost(new Shipment("INTERNATIONAL", 40, ServiceLevel.EXPRESS));
+        double cost = calculator
+                .calculateCost(new Shipment("INTERNATIONAL", 40, ServiceLevel.EXPRESS));
 
         assertEquals(967.5, cost, 0.001);
     }
@@ -59,7 +62,8 @@ class ShippingCalculatorCharacterisationTest {
 
     @Test
     void addsHeavySurchargeJustOverThirtyKg() {
-        double cost = calculator.calculateCost(new Shipment("DOMESTIC", 30.1, ServiceLevel.STANDARD));
+        double cost = calculator
+                .calculateCost(new Shipment("DOMESTIC", 30.1, ServiceLevel.STANDARD));
 
         assertEquals(170.5, cost, 0.001);
     }
