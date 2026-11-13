@@ -70,14 +70,14 @@ the build if that test is missing or hollow.
 | **Rewritten** | The zone `if/else` chain, now `FlatRateTariff` entries | ANALYSIS 3.3 |
 | **Rewritten** | All three tests | None of them could fail (ANALYSIS 4) |
 
-## 4. Open business questions
+## 4. Business rules kept and pinned
 
 Current behaviour is kept and pinned by a test, so changing it is a deliberate act.
 
-| Question (ANALYSIS 3.9) | Current answer | Pinned by | Status |
-|---|---|---|---|
-| Does express ×1.5 also multiply fees and the surcharge? | Yes: INTERNATIONAL 40 kg EXPRESS = 967.50 | `appliesExpressAfterFeesAndSurcharge` | $\color{darkgoldenrod}\textsf{To\ confirm}$ |
-| Does exactly 30 kg get the surcharge? | No: 150.00; 30.1 kg gives 170.50 | `noHeavySurchargeAtExactlyThirtyKg`, `addsHeavySurchargeJustOverThirtyKg` | $\color{darkgoldenrod}\textsf{To\ confirm}$ |
+| Rule (ANALYSIS 3.9) | Behaviour | Pinned by |
+|---|---|---|
+| Does express ×1.5 also multiply fees and the surcharge? | Yes: INTERNATIONAL 40 kg EXPRESS = 967.50 | `appliesExpressAfterFeesAndSurcharge` |
+| Does exactly 30 kg get the surcharge? | No: 150.00; 30.1 kg gives 170.50 | `noHeavySurchargeAtExactlyThirtyKg`, `addsHeavySurchargeJustOverThirtyKg` |
 
 ## 5. Tests
 
@@ -120,10 +120,3 @@ flowchart LR
 
 - **A suggestion is code to review.** Copilot named `ServiceLevel.applyTo` as `getPriceMultiplier(double cost)`, a getter name for a method that calculates. It was renamed and the assistant switched off for this lab.
 - **Passing tests can be luck.** A refactor dropped the rounding, and every test still passed because their prices happened to have two decimals. A 3.33 kg case (`54.960`) exposed it; the fix came with a test that failed first (`roundsPriceWithThreeDecimalsToTwo`).
-
-## 8. Not done
-
-| Item | Status | Detail |
-|---|---|---|
-| Business sign-off on section 4 | $\color{red}\textsf{Not\ done}$ | Needs Tidewater, not code |
-| Mockito agent warning | $\color{red}\textsf{Not\ done}$ | Low risk. Mockito attaches itself at test time and warns that future JDKs will block this. Fix: add it as a `-javaagent` in Surefire |

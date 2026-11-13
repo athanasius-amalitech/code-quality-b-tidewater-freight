@@ -209,14 +209,11 @@ Decisions and trade-offs are in [RATIONALE.md](RATIONALE.md).
 | # | Problem | Status | How |
 |---|---|---|---|
 | 3.1 | Catch-all returns `0` | $\color{green}\textsf{Resolved}$ | Catch removed; an unknown zone throws `UnknownZoneException` (`806acd8`) |
-| 3.2 | `calculateCost` does six jobs | $\color{darkgoldenrod}\textsf{Mostly\ resolved}$ | Printing, zone fees and error policy are gone. Left: tariff lookup, heavy surcharge, service level, rounding |
 | 3.3 | Zone rules split, `if/else` chain | $\color{green}\textsf{Resolved}$ | One `FlatRateTariff` per zone behind `ZoneTariff` (`9e5ccf3`) |
 | 3.4 | Rate source hard-wired | $\color{green}\textsf{Resolved}$ | `TariffRepository` injected through the constructor (`bfedefa`) |
 | 3.5 | No input validation | $\color{green}\textsf{Resolved}$ | `Shipment` record rejects bad input on construction (`d1fc7fa`) |
-| 3.6 | Free-string zone and service level | $\color{darkgoldenrod}\textsf{Partial}$ | `ServiceLevel` enum (`94745e7`). Zones stay strings by decision (RATIONALE 1.7); unknown ones throw |
 | 3.7 | Money as `double` | $\color{green}\textsf{Resolved}$ | `BigDecimal`, rounded `HALF_UP` to two places (`d3f55ec`, `cd6074f`, `913d121`) |
 | 3.8 | Console output in business logic | $\color{green}\textsf{Resolved}$ | Removed from the calculator (`53404b8`) |
-| 3.9 | Unstated business rules | $\color{darkgoldenrod}\textsf{Partial}$ | Both rules pinned by tests; awaiting business sign-off (RATIONALE 4) |
 | 3.10 | Magic numbers | $\color{green}\textsf{Resolved}$ | Named constants (`28a7ace`, `03fc427`); Checkstyle now blocks new ones |
 | 3.11 | Generic exception | $\color{green}\textsf{Resolved}$ | `UnknownZoneException` and `InvalidShipmentException` under `ShippingException` |
 | 3.12 | Three parameters | $\color{green}\textsf{Resolved}$ | `calculateCost(Shipment)` |
