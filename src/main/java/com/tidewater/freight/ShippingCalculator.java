@@ -4,27 +4,19 @@ import java.util.Objects;
 
 public class ShippingCalculator {
 
-    private final RateRepository rateRepository;
     private static final double HEAVY_ITEM_THRESHOLD_KG = 30;
     private static final double HEAVY_ITEM_SURCHARGE = 20;
+    private final TariffRepository tariffRepository;
 
-    public ShippingCalculator(RateRepository rateRepository) {
-        this.rateRepository = Objects.requireNonNull(rateRepository, "rateRepository");
+    public ShippingCalculator(TariffRepository tariffRepository) {
+        this.tariffRepository = Objects.requireNonNull(tariffRepository, "tariffRepository");
     }
 
     public double calculateCost(String zone, double weightKg, ServiceLevel serviceLevel) {
         try {
-            double rate = rateRepository.findRate(zone);
-            double cost = rate * weightKg;
 
-            // zone-specific fees
-            if (zone.equals("DOMESTIC")) {
-                // no extra fee
-            } else if (zone.equals("REGIONAL")) {
-                cost = cost + 10; // handling fee
-            } else if (zone.equals("INTERNATIONAL")) {
-                cost = cost + 25; // customs handling
-            }
+            ZoneTariff tariff = tariffRepository.findTariff(zone);
+            double cost = tariff.costFor(weightKg);
 
             if (weightKg > HEAVY_ITEM_THRESHOLD_KG) {
                 cost = cost + HEAVY_ITEM_SURCHARGE;

@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 
 class ShippingCalculatorTest {
 
-    private final ShippingCalculator calculator = new ShippingCalculator(new InMemoryRateRepository());
+    private final ShippingCalculator calculator = new ShippingCalculator(new InMemoryTariffRepository());
 
     @Test
     void calculatesACost() {
