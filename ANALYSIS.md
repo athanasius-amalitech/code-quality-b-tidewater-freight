@@ -75,7 +75,7 @@ INTERNATIONAL fee, the heavy surcharge and the express multiplier are never run.
 
 ### 3.1 Catch-all returns 0 $\color{red}\textsf{Critical}$
 
-[ShippingCalculator.java:34](src/main/java/com/tidewater/freight/ShippingCalculator.java#L34)
+[ShippingCalculator.java:34](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L34)
 catches `Exception` and returns `0`.
 
 - **Root cause:** the catch is too broad and has no recovery. It catches the `IllegalArgumentException` for an unknown or null zone, but also the `NullPointerException` from a null service level, and any future bug in the method.
@@ -83,7 +83,7 @@ catches `Exception` and returns `0`.
 
 ### 3.2 `calculateCost` does six jobs $\color{darkorange}\textsf{High}$
 
-[ShippingCalculator.java:8 to 38](src/main/java/com/tidewater/freight/ShippingCalculator.java#L8):
+[ShippingCalculator.java:8 to 38](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L8):
 looks up the rate, adds zone fees, adds the heavy surcharge, applies the service
 level, prints to the console, and decides the error policy.
 
@@ -93,16 +93,16 @@ level, prints to the console, and decides the error policy.
 ### 3.3 Zone rules hard-coded and split $\color{darkorange}\textsf{High}$
 
 The per-kg rate lives in
-[InMemoryRateRepository.java:11 to 13](src/main/java/com/tidewater/freight/InMemoryRateRepository.java#L11),
+[InMemoryRateRepository.java:11 to 13](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/InMemoryRateRepository.java#L11),
 the handling fee in the `if/else` chain at
-[ShippingCalculator.java:14 to 20](src/main/java/com/tidewater/freight/ShippingCalculator.java#L14).
+[ShippingCalculator.java:14 to 20](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L14).
 
 - **Root cause:** a zone's rules have no single home (§2.2 DRY).
 - **Risk:** the new zone the business is about to add means editing both classes and the existing chain (§12.2). Add the rate but forget the fee, and the new zone silently has no fee.
 
 ### 3.4 Rate source hard-wired $\color{darkorange}\textsf{High}$
 
-[ShippingCalculator.java:6](src/main/java/com/tidewater/freight/ShippingCalculator.java#L6):
+[ShippingCalculator.java:6](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L6):
 `private final RateRepository repository = new InMemoryRateRepository();`
 
 - **Root cause:** the `RateRepository` interface exists, but the calculator builds its own implementation instead of receiving one (§12.5). The code's own comment on line 5 says so.
@@ -116,7 +116,7 @@ Negative, zero and `NaN` weights are priced (see section 2). Nulls fall into the
 
 ### 3.6 Free-string zone and service level $\color{darkorange}\textsf{High}$
 
-[ShippingCalculator.java:28](src/main/java/com/tidewater/freight/ShippingCalculator.java#L28)
+[ShippingCalculator.java:28](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L28)
 only checks `serviceLevel.equals("EXPRESS")`.
 
 - **Risk:** `"express"`, `"Express"` or `"OVERNIGHT"` are silently charged the standard price. A typo in a zone becomes GHS 0 through 3.1.
@@ -128,7 +128,7 @@ only checks `serviceLevel.equals("EXPRESS")`.
 
 ### 3.8 Console output in business logic $\color{darkgoldenrod}\textsf{Medium}$
 
-[ShippingCalculator.java:32](src/main/java/com/tidewater/freight/ShippingCalculator.java#L32)
+[ShippingCalculator.java:32](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L32)
 prints every calculation. It is a side effect hidden in a calculation (§4.4); PIT
 shows that deleting it changes no test result.
 
@@ -143,20 +143,20 @@ Neither rule is written down or tested, so a refactor could change either withou
 
 | # | Location | Rule | Problem |
 |---|---|---|---|
-| 3.10 | [ShippingCalculator.java:17 to 29](src/main/java/com/tidewater/freight/ShippingCalculator.java#L17), [InMemoryRateRepository.java:11 to 13](src/main/java/com/tidewater/freight/InMemoryRateRepository.java#L11) | §3.4 | `10`, `25`, `30`, `20`, `1.5` and the rates have no names |
-| 3.11 | [InMemoryRateRepository.java:20](src/main/java/com/tidewater/freight/InMemoryRateRepository.java#L20) | §6.3 | Generic `IllegalArgumentException`; a domain exception would say what failed |
-| 3.12 | [ShippingCalculator.java:8](src/main/java/com/tidewater/freight/ShippingCalculator.java#L8) | §4.3 | Three parameters; a `Shipment` record groups them |
-| 3.13 | [ShippingCalculator.java:13 to 27](src/main/java/com/tidewater/freight/ShippingCalculator.java#L13) | §10.1 | Comments restate the code; the `DOMESTIC` branch is empty |
-| 3.14 | [ShippingCalculator.java:6](src/main/java/com/tidewater/freight/ShippingCalculator.java#L6) | §3.1 | `repository` does not say what it holds |
-| 3.15 | [Demo.java:7 to 9](src/main/java/com/tidewater/freight/Demo.java#L7) | §11.1 | Lines over 100 columns, aligned with spaces |
+| 3.10 | [ShippingCalculator.java:17 to 29](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L17), [InMemoryRateRepository.java:11 to 13](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/InMemoryRateRepository.java#L11) | §3.4 | `10`, `25`, `30`, `20`, `1.5` and the rates have no names |
+| 3.11 | [InMemoryRateRepository.java:20](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/InMemoryRateRepository.java#L20) | §6.3 | Generic `IllegalArgumentException`; a domain exception would say what failed |
+| 3.12 | [ShippingCalculator.java:8](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L8) | §4.3 | Three parameters; a `Shipment` record groups them |
+| 3.13 | [ShippingCalculator.java:13 to 27](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L13) | §10.1 | Comments restate the code; the `DOMESTIC` branch is empty |
+| 3.14 | [ShippingCalculator.java:6](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/ShippingCalculator.java#L6) | §3.1 | `repository` does not say what it holds |
+| 3.15 | [Demo.java:7 to 9](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/main/java/com/tidewater/freight/Demo.java#L7) | §11.1 | Lines over 100 columns, aligned with spaces |
 
 ## 4. Tests that pass without testing anything
 
 | Test | What it asserts | Why it proves nothing | Mutants caught |
 |---|---|---|---|
-| [`calculatesACost`](src/test/java/com/tidewater/freight/ShippingCalculatorTest.java#L11) | `cost > 0` | Any positive number passes. The right answer is `50.0`; `0.5` (from `/` instead of `*`) also passes. | 1 (only "return 0") |
-| [`calculatesExpressCost`](src/test/java/com/tidewater/freight/ShippingCalculatorTest.java#L18) | the mock returns `967.5` | It mocks the class under test, so **no production code runs**. It tests Mockito. `967.5` happens to be correct, which makes it look real. PIT does not even list it as touching the class. | 0 |
-| [`returnsACostForAShipment`](src/test/java/com/tidewater/freight/ShippingCalculatorTest.java#L26) | `assertNotNull(cost)` | `cost` is a primitive `double`, autoboxed, so it **can never be null**. The test cannot fail, even when the catch-all returns 0. | 0 |
+| [`calculatesACost`](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/test/java/com/tidewater/freight/ShippingCalculatorTest.java#L11) | `cost > 0` | Any positive number passes. The right answer is `50.0`; `0.5` (from `/` instead of `*`) also passes. | 1 (only "return 0") |
+| [`calculatesExpressCost`](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/test/java/com/tidewater/freight/ShippingCalculatorTest.java#L18) | the mock returns `967.5` | It mocks the class under test, so **no production code runs**. It tests Mockito. `967.5` happens to be correct, which makes it look real. PIT does not even list it as touching the class. | 0 |
+| [`returnsACostForAShipment`](https://github.com/athanasius-amalitech/code-quality-b-tidewater-freight/blob/e1b47905a36c4bae142bf6652b7fc1a15511728b/src/test/java/com/tidewater/freight/ShippingCalculatorTest.java#L26) | `assertNotNull(cost)` | `cost` is a primitive `double`, autoboxed, so it **can never be null**. The test cannot fail, even when the catch-all returns 0. | 0 |
 
 Across the suite:
 
@@ -200,8 +200,8 @@ flowchart TD
 
 ## 8. Status after the refactor
 
-Sections 1 to 7 are unchanged since they were first committed (`e1b4790`). Their
-line links point at the starter code: open them at that commit to see the lines.
+Sections 1 to 7 are unchanged since they were first committed (`e1b4790`), except
+that their line links now open the starter code at that commit.
 Decisions and trade-offs are in [RATIONALE.md](RATIONALE.md).
 
 ### 8.1 Code problems
