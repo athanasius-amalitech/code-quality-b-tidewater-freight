@@ -13,21 +13,16 @@ public class ShippingCalculator {
     }
 
     public double calculateCost(String zone, double weightKg, ServiceLevel serviceLevel) {
-        try {
 
-            ZoneTariff tariff = tariffRepository.findTariff(zone);
-            double cost = tariff.costFor(weightKg);
+        ZoneTariff tariff = tariffRepository.findTariff(zone);
+        double cost = tariff.costFor(weightKg);
 
-            if (weightKg > HEAVY_ITEM_THRESHOLD_KG) {
-                cost = cost + HEAVY_ITEM_SURCHARGE;
-            }
-
-            cost = serviceLevel.applyTo(cost);
-
-            return cost;
-        } catch (Exception e) {
-            // could not work out a rate (for example an unknown zone) - return zero
-            return 0;
+        if (weightKg > HEAVY_ITEM_THRESHOLD_KG) {
+            cost = cost + HEAVY_ITEM_SURCHARGE;
         }
+
+        cost = serviceLevel.applyTo(cost);
+
+        return cost;
     }
 }

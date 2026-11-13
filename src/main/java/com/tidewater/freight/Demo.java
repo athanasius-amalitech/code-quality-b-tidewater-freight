@@ -1,16 +1,22 @@
 package com.tidewater.freight;
 
+import com.tidewater.freight.exceptions.ShippingException;
+
 public class Demo {
         public static void main(String[] args) {
 
-                InMemoryTariffRepository tariffRepository = new InMemoryTariffRepository();
+                TariffRepository tariffRepository = new InMemoryTariffRepository();
                 ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
 
                 System.out.println("Result DOMESTIC 10kg STANDARD       -> "
                                 + calculator.calculateCost("DOMESTIC", 10, ServiceLevel.STANDARD));
                 System.out.println("Result INTERNATIONAL 40kg EXPRESS   -> "
                                 + calculator.calculateCost("INTERNATIONAL", 40, ServiceLevel.EXPRESS));
-                System.out.println("Result unknown zone MOON 10kg STD   -> "
-                                + calculator.calculateCost("MOON", 10, ServiceLevel.STANDARD));
+
+                try {
+                        calculator.calculateCost("MOON", 10, ServiceLevel.STANDARD);
+                } catch (ShippingException e) {
+                        System.out.println("Could not price shipment: " + e.getMessage());
+                }
         }
 }
