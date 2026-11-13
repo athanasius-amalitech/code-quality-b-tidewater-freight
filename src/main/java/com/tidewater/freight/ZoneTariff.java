@@ -1,5 +1,7 @@
 package com.tidewater.freight;
 
+import java.math.BigDecimal;
+
 public interface ZoneTariff {
-    double costFor(double weightKg);
+    BigDecimal costFor(double weightKg);
 }

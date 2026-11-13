@@ -18,7 +18,7 @@ public class ShippingCalculator {
 
     public BigDecimal calculateCost(Shipment shipment) {
         ZoneTariff tariff = tariffRepository.findTariff(shipment.zone());
-        BigDecimal cost = BigDecimal.valueOf(tariff.costFor(shipment.weightKg()));
+        BigDecimal cost = tariff.costFor(shipment.weightKg());
 
         if (shipment.weightKg() > HEAVY_ITEM_THRESHOLD_KG) {
             cost = cost.add(HEAVY_ITEM_SURCHARGE);

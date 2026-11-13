@@ -1,9 +1,11 @@
 package com.tidewater.freight;
 
-public record FlatRateTariff(double ratePerKg, double handlingFee) implements ZoneTariff {
+import java.math.BigDecimal;
+
+public record FlatRateTariff(BigDecimal ratePerKg, BigDecimal handlingFee) implements ZoneTariff {
 
     @Override
-    public double costFor(double weightKg) {
-        return (weightKg * ratePerKg) + handlingFee;
+    public BigDecimal costFor(double weightKg) {
+        return ratePerKg.multiply(BigDecimal.valueOf(weightKg)).add(handlingFee);
     }
 }

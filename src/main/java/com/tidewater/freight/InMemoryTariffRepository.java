@@ -1,5 +1,6 @@
 package com.tidewater.freight;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +11,10 @@ public class InMemoryTariffRepository implements TariffRepository {
     private final Map<String, ZoneTariff> tariffs = new HashMap<>();
 
     public InMemoryTariffRepository() {
-        tariffs.put("DOMESTIC", new FlatRateTariff(5.0, 0.0));
-        tariffs.put("REGIONAL", new FlatRateTariff(8.0, 10.0));
-        tariffs.put("INTERNATIONAL", new FlatRateTariff(15.0, 25.0));
+        tariffs.put("DOMESTIC", new FlatRateTariff(new BigDecimal("5"), BigDecimal.ZERO));
+        tariffs.put("REGIONAL", new FlatRateTariff(new BigDecimal("8"), new BigDecimal("10")));
+        tariffs.put("INTERNATIONAL",
+                new FlatRateTariff(new BigDecimal("15"), new BigDecimal("25")));
     }
 
     @Override
