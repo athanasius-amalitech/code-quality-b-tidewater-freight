@@ -209,10 +209,10 @@ Decisions and trade-offs are in [RATIONALE.md](RATIONALE.md).
 | # | Problem | Status | How |
 |---|---|---|---|
 | 3.1 | Catch-all returns `0` | $\color{green}\textsf{Resolved}$ | Catch removed; an unknown zone throws `UnknownZoneException` (`806acd8`) |
-| 3.3 | Zone rules split, `if/else` chain | $\color{green}\textsf{Resolved}$ | One `FlatRateTariff` per zone behind `ZoneTariff` (`9e5ccf3`) |
+| 3.3 | Zone rules split, `if/else` chain | $\color{green}\textsf{Resolved}$ | One `FlatRateTariff` per zone behind `ZoneTariff` (`9e5ccf3`); rates now one line per zone in `tariffs.properties` |
 | 3.4 | Rate source hard-wired | $\color{green}\textsf{Resolved}$ | `TariffRepository` injected through the constructor (`bfedefa`) |
 | 3.5 | No input validation | $\color{green}\textsf{Resolved}$ | `Shipment` record rejects bad input on construction (`d1fc7fa`) |
-| 3.7 | Money as `double` | $\color{green}\textsf{Resolved}$ | `BigDecimal`, rounded `HALF_UP` to two places (`d3f55ec`, `cd6074f`, `913d121`) |
+| 3.7 | Money as `double` | $\color{green}\textsf{Resolved}$ | `BigDecimal` for money and weight, rounded `HALF_UP` to two places (`d3f55ec`, `cd6074f`, `913d121`) |
 | 3.8 | Console output in business logic | $\color{green}\textsf{Resolved}$ | Removed from the calculator (`53404b8`) |
 | 3.10 | Magic numbers | $\color{green}\textsf{Resolved}$ | Named constants (`28a7ace`, `03fc427`); Checkstyle now blocks new ones |
 | 3.11 | Generic exception | $\color{green}\textsf{Resolved}$ | `UnknownZoneException` and `InvalidShipmentException` under `ShippingException` |
@@ -230,17 +230,17 @@ Decisions and trade-offs are in [RATIONALE.md](RATIONALE.md).
 | `returnsACostForAShipment` can never fail | $\color{green}\textsf{Resolved}$ Deleted |
 | Nothing tests failure | $\color{green}\textsf{Resolved}$ Unknown zone, missing repository, and every invalid `Shipment` input are tested |
 | Most rules never run | $\color{green}\textsf{Resolved}$ Every fee, the surcharge, express, both 30 kg boundaries and rounding have a test |
-| No isolation | $\color{green}\textsf{Resolved}$ Calculator tested against a mocked repository |
+| No isolation | $\color{green}\textsf{Resolved}$ Calculator tested against a mocked repository and tariff |
 | Vague names, wildcard imports | $\color{green}\textsf{Resolved}$ Names state the behaviour; Checkstyle blocks wildcards |
 
 ### 8.3 The evidence again
 
 | Measure | Section 2 | Now |
 |---|---|---|
-| Tests | 3 | 26, all passing |
-| PIT mutants killed | 3 of 18 (17%) | 8 of 8 (100%), `Demo` excluded |
+| Tests | 3 | 40, all passing |
+| PIT mutants killed | 3 of 18 (17%) | 18 of 18 (100%), `Demo` excluded |
 | Line coverage | 20 of 33 (61%) | 100% of lines and branches, `Demo` excluded |
 
 Every edge case in section 2 is now rejected with `InvalidShipmentException`, except
-`"express"`, which no longer compiles, and REGIONAL 2.3 kg EXPRESS, which now prices at
-`42.60`. The demo output before and after is in the [README](README.md#what-the-demo-prints).
+three: `"express"` and a `NaN` weight can no longer be written at all (an enum and a
+`BigDecimal`), and REGIONAL 2.3 kg EXPRESS now prices at `42.60`. The demo output before and after is in the [README](README.md#what-the-demo-prints).

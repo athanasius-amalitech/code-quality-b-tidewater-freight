@@ -9,7 +9,8 @@ fails loudly, prices in `BigDecimal`, and is guarded by four build gates.
 
 ## Running it
 
-JDK 21 and Maven. The commands work as written in PowerShell, cmd and bash.
+JDK 21 and Maven. No quoting needed: the commands were run as written in PowerShell,
+cmd and Git Bash.
 
 Demo:
 
@@ -56,7 +57,7 @@ Packages by feature, under `com.tidewater.freight`.
 |---|---|---|
 | (root) | `ShippingException` | Base of every failure, so a caller can catch them all in one place |
 | `shipment` | `Shipment`, `ServiceLevel`, `InvalidShipmentException` | What is being sent; rejects bad input on construction |
-| `tariff` | `ZoneTariff`, `FlatRateTariff`, `TariffRepository`, `InMemoryTariffRepository`, `UnknownZoneException` | What each zone charges |
+| `tariff` | `ZoneTariff`, `FlatRateTariff`, `TariffRepository`, `InMemoryTariffRepository`, `PropertiesTariffLoader`, `UnknownZoneException`, `TariffConfigurationException` | What each zone charges, read from `src/main/resources/tariffs.properties` |
 | `pricing` | `ShippingCalculator` | Tariff, heavy surcharge, service level, rounding |
 | `demo` | `Demo` | Example run; excluded from coverage and mutation gates |
 
@@ -66,7 +67,7 @@ Packages by feature, under `com.tidewater.freight`.
 
 | Gate | Checks |
 |---|---|
-| Format | Every file matches the shared [AmaliTech formatter profile](https://github.com/athanasius-amalitech/vscode-java-formatter) |
+| Format | Every file matches the shared [AmaliTech formatter profile](https://github.com/athanasius-amalitech/vscode-java-formatter), pinned to one commit in `pom.xml` |
 | Style | Checkstyle rules from the standard, in [config/checkstyle.xml](config/checkstyle.xml) |
 | Coverage | 100% of lines and branches |
 | Mutation | At least 90% of PIT mutants killed |
@@ -75,7 +76,8 @@ Packages by feature, under `com.tidewater.freight`.
 
 | Zone prices like... | Change |
 |---|---|
-| The others (rate per kg plus a fee) | One `tariffs.put(...)` line in `InMemoryTariffRepository` |
-| Something new | A class that `implements ZoneTariff`, registered the same way |
+| The others (rate per kg plus a fee) | One line in `tariffs.properties`, for example `COASTAL=12,15` |
+| Something new | A class that `implements ZoneTariff`, added to the map the repository is built from |
 
-Add a test with the agreed price. The calculator does not change.
+Add a test with the agreed price. No Java changes for a flat-rate zone, and the
+calculator never changes.
