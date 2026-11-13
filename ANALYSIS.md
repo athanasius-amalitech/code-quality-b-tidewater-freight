@@ -237,7 +237,7 @@ Decisions and trade-offs are in [RATIONALE.md](RATIONALE.md).
 
 | Measure | Section 2 | Now |
 |---|---|---|
-| Tests | 3 | 23, all passing |
+| Tests | 3 | 26, all passing |
 | PIT mutants killed | 3 of 18 (17%) | 8 of 8 (100%), `Demo` excluded |
 | Line coverage | 20 of 33 (61%) | 100% of lines and branches, `Demo` excluded |
 

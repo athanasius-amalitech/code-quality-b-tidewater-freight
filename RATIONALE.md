@@ -24,7 +24,8 @@ rules are cited from the AmaliTech Coding Standards, Java Edition (for example ย
 
 - **The catch-all is gone** (ANALYSIS 3.1, Critical). Nothing in the pricing path catches anything.
 - **One base, one exception per failure.** `ShippingException` is the abstract base; `UnknownZoneException` and `InvalidShipmentException` say what went wrong.
-- **Only the edge catches.** `Demo` catches `ShippingException` and prints why. A real caller would do the same at its boundary.
+- **No try-catch inside the service, on purpose.** Nothing in the pricing path can recover from a bad zone or bad input, so a catch there could only hide the failure (ยง6.1). The failure travels to the caller instead.
+- **The catch sits at the boundary.** `Demo` catches `ShippingException`, the one base type, and tells the user why the shipment could not be priced. A real caller (an API, a UI) would do the same.
 
 ### 1.5 Bad input is rejected once, on construction
 
@@ -83,11 +84,12 @@ Current behaviour is kept and pinned by a test, so changing it is a deliberate a
 
 | | Before | After |
 |---|---|---|
-| Tests | 3 (none could fail) | 23 |
+| Tests | 3 (none could fail) | 26 |
 | Mutants killed (PIT) | 3 of 18 | 8 of 8 |
 | Line coverage | 61% | 100% lines and branches |
 
-- **Three kinds of test.** Characterisation (real objects, exact prices), unit tests with a mocked `TariffRepository`, and validation tests for `Shipment`.
+- **Three kinds of test.** Characterisation (real objects, exact prices), unit tests with Mockito, and validation tests for `Shipment`.
+- **The mocks test the calculator's own rules.** A mocked `ZoneTariff` returns a round 100, so surcharge, express order and rounding are checked whatever a zone charges. That includes a zone that does not exist yet (`COASTAL`).
 - **Every assertion checks a value.** No `> 0`, no `assertNotNull` on a primitive, no mock of the class under test.
 - **`Demo` is excluded** from coverage and PIT: it prints examples and holds no logic.
 - **PIT skips records**, so it says nothing about `Shipment`. `ShipmentTest` guards that validation.
@@ -99,7 +101,7 @@ standard is now checked by tools, in the editor and in the build.
 
 ```mermaid
 flowchart LR
-  A["mvn verify"] --> B["Format gate"]:::gate --> C["Style gate"]:::gate --> D["23 tests"] --> E["Coverage gate"]:::gate --> F["Mutation gate"]:::gate --> G["BUILD SUCCESS"]:::good
+  A["mvn verify"] --> B["Format gate"]:::gate --> C["Style gate"]:::gate --> D["26 tests"] --> E["Coverage gate"]:::gate --> F["Mutation gate"]:::gate --> G["BUILD SUCCESS"]:::good
   classDef gate fill:#ddf4ff,stroke:#0969da,color:#24292f
   classDef good fill:#dafbe1,stroke:#1a7f37,color:#24292f
 ```
