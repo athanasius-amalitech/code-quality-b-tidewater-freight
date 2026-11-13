@@ -14,7 +14,8 @@ public class Demo {
                                 + calculator.calculateCost("INTERNATIONAL", 40, ServiceLevel.EXPRESS));
 
                 try {
-                        calculator.calculateCost("MOON", 10, ServiceLevel.STANDARD);
+                        System.out.println("Result MOON 10kg STANDARD -> "
+                                        + calculator.calculateCost("MOON", 10, ServiceLevel.STANDARD));
                 } catch (ShippingException e) {
                         System.out.println("Could not price shipment: " + e.getMessage());
                 }

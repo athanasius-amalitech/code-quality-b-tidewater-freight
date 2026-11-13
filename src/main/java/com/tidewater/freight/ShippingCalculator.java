@@ -13,7 +13,6 @@ public class ShippingCalculator {
     }
 
     public double calculateCost(String zone, double weightKg, ServiceLevel serviceLevel) {
-
         ZoneTariff tariff = tariffRepository.findTariff(zone);
         double cost = tariff.costFor(weightKg);
 
