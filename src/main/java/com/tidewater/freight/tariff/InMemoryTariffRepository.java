@@ -1,18 +1,13 @@
 package com.tidewater.freight.tariff;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryTariffRepository implements TariffRepository {
 
-    private final Map<String, ZoneTariff> tariffs = new HashMap<>();
+    private final Map<String, ZoneTariff> tariffs;
 
-    public InMemoryTariffRepository() {
-        tariffs.put("DOMESTIC", new FlatRateTariff(new BigDecimal("5"), BigDecimal.ZERO));
-        tariffs.put("REGIONAL", new FlatRateTariff(new BigDecimal("8"), new BigDecimal("10")));
-        tariffs.put("INTERNATIONAL",
-                new FlatRateTariff(new BigDecimal("15"), new BigDecimal("25")));
+    public InMemoryTariffRepository(Map<String, ZoneTariff> tariffs) {
+        this.tariffs = Map.copyOf(tariffs);
     }
 
     @Override

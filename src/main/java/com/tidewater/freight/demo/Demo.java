@@ -5,15 +5,19 @@ import com.tidewater.freight.pricing.ShippingCalculator;
 import com.tidewater.freight.shipment.ServiceLevel;
 import com.tidewater.freight.shipment.Shipment;
 import com.tidewater.freight.tariff.InMemoryTariffRepository;
+import com.tidewater.freight.tariff.PropertiesTariffLoader;
 import com.tidewater.freight.tariff.TariffRepository;
+import java.math.BigDecimal;
 
 public class Demo {
 
-    private static final double PARCEL_WEIGHT_KG = 10;
-    private static final double HEAVY_PARCEL_WEIGHT_KG = 40;
+    private static final String TARIFF_FILE = "tariffs.properties";
+    private static final BigDecimal PARCEL_WEIGHT_KG = new BigDecimal("10");
+    private static final BigDecimal HEAVY_PARCEL_WEIGHT_KG = new BigDecimal("40");
 
     public static void main(String[] args) {
-        TariffRepository tariffRepository = new InMemoryTariffRepository();
+        TariffRepository tariffRepository = new InMemoryTariffRepository(
+                new PropertiesTariffLoader().loadResource(TARIFF_FILE));
         ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
 
         System.out.println("Result DOMESTIC 10kg STANDARD       -> "

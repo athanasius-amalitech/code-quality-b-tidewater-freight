@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class ShippingCalculator {
 
-    private static final double HEAVY_ITEM_THRESHOLD_KG = 30;
+    private static final BigDecimal HEAVY_ITEM_THRESHOLD_KG = new BigDecimal("30");
     private static final BigDecimal HEAVY_ITEM_SURCHARGE = new BigDecimal("20");
     private static final int PRICE_DECIMAL_PLACES = 2;
 
@@ -23,7 +23,7 @@ public class ShippingCalculator {
         ZoneTariff tariff = tariffRepository.findTariff(shipment.zone());
         BigDecimal cost = tariff.costFor(shipment.weightKg());
 
-        if (shipment.weightKg() > HEAVY_ITEM_THRESHOLD_KG) {
+        if (shipment.weightKg().compareTo(HEAVY_ITEM_THRESHOLD_KG) > 0) {
             cost = cost.add(HEAVY_ITEM_SURCHARGE);
         }
 

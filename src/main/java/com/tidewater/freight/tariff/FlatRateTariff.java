@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public record FlatRateTariff(BigDecimal ratePerKg, BigDecimal handlingFee) implements ZoneTariff {
 
     @Override
-    public BigDecimal costFor(double weightKg) {
-        return ratePerKg.multiply(BigDecimal.valueOf(weightKg)).add(handlingFee);
+    public BigDecimal costFor(BigDecimal weightKg) {
+        return ratePerKg.multiply(weightKg).add(handlingFee);
     }
 }

@@ -30,7 +30,7 @@ class ShippingCalculatorTest {
         when(tariffRepository.findTariff("DOMESTIC"))
                 .thenReturn(new FlatRateTariff(new BigDecimal("2"), new BigDecimal("1")));
 
-        Shipment shipment = new Shipment("DOMESTIC", 10, ServiceLevel.STANDARD);
+        Shipment shipment = new Shipment("DOMESTIC", new BigDecimal("10"), ServiceLevel.STANDARD);
 
         ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
 
@@ -44,46 +44,35 @@ class ShippingCalculatorTest {
         when(tariffRepository.findTariff("MOON")).thenThrow(new UnknownZoneException("MOON"));
 
         ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
+        Shipment shipment = new Shipment("MOON", new BigDecimal("10"), ServiceLevel.STANDARD);
 
-        assertThrows(UnknownZoneException.class,
-                () -> calculator.calculateCost(new Shipment("MOON", 10, ServiceLevel.STANDARD)));
+        assertThrows(UnknownZoneException.class, () -> calculator.calculateCost(shipment));
     }
 
     @Test
     void addsHeavySurchargeOnTopOfAnyTariff() {
-        when(tariffRepository.findTariff("COASTAL")).thenReturn(zoneTariff);
-        when(zoneTariff.costFor(30.1)).thenReturn(new BigDecimal("100"));
-
-        ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
-
-        BigDecimal cost = calculator
-                .calculateCost(new Shipment("COASTAL", 30.1, ServiceLevel.STANDARD));
+        BigDecimal cost = priceWithMockedTariff("30.1", "100", ServiceLevel.STANDARD);
 
         assertEquals(new BigDecimal("120.00"), cost);
     }
 
     @Test
+    void addsNoSurchargeAtExactlyThirtyKg() {
+        BigDecimal cost = priceWithMockedTariff("30", "100", ServiceLevel.STANDARD);
+
+        assertEquals(new BigDecimal("100.00"), cost);
+    }
+
+    @Test
     void appliesExpressToTariffPlusSurcharge() {
-        when(tariffRepository.findTariff("COASTAL")).thenReturn(zoneTariff);
-        when(zoneTariff.costFor(40)).thenReturn(new BigDecimal("100"));
-
-        ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
-
-        BigDecimal cost = calculator
-                .calculateCost(new Shipment("COASTAL", 40, ServiceLevel.EXPRESS));
+        BigDecimal cost = priceWithMockedTariff("40", "100", ServiceLevel.EXPRESS);
 
         assertEquals(new BigDecimal("180.00"), cost);
     }
 
     @Test
     void roundsTariffCostHalfUpToTwoDecimals() {
-        when(tariffRepository.findTariff("COASTAL")).thenReturn(zoneTariff);
-        when(zoneTariff.costFor(10)).thenReturn(new BigDecimal("10.005"));
-
-        ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
-
-        BigDecimal cost = calculator
-                .calculateCost(new Shipment("COASTAL", 10, ServiceLevel.STANDARD));
+        BigDecimal cost = priceWithMockedTariff("10", "10.005", ServiceLevel.STANDARD);
 
         assertEquals(new BigDecimal("10.01"), cost);
     }
@@ -91,5 +80,16 @@ class ShippingCalculatorTest {
     @Test
     void rejectsMissingRepository() {
         assertThrows(NullPointerException.class, () -> new ShippingCalculator(null));
+    }
+
+    private BigDecimal priceWithMockedTariff(String weightKg, String tariffCost,
+            ServiceLevel serviceLevel) {
+        BigDecimal weight = new BigDecimal(weightKg);
+        when(tariffRepository.findTariff("COASTAL")).thenReturn(zoneTariff);
+        when(zoneTariff.costFor(weight)).thenReturn(new BigDecimal(tariffCost));
+
+        ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
+
+        return calculator.calculateCost(new Shipment("COASTAL", weight, serviceLevel));
     }
 }
