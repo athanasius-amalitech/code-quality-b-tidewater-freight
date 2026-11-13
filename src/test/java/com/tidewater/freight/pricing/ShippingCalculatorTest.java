@@ -4,18 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.tidewater.freight.shipment.ServiceLevel;
 import com.tidewater.freight.shipment.Shipment;
 import com.tidewater.freight.tariff.FlatRateTariff;
 import com.tidewater.freight.tariff.TariffRepository;
 import com.tidewater.freight.tariff.UnknownZoneException;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ShippingCalculatorTest {

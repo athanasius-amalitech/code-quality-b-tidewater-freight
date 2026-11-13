@@ -1,12 +1,11 @@
 package com.tidewater.freight.pricing;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Objects;
-
 import com.tidewater.freight.shipment.Shipment;
 import com.tidewater.freight.tariff.TariffRepository;
 import com.tidewater.freight.tariff.ZoneTariff;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
 
 public class ShippingCalculator {
 

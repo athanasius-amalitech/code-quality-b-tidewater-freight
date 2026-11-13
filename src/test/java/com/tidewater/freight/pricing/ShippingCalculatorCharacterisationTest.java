@@ -2,13 +2,11 @@ package com.tidewater.freight.pricing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.math.BigDecimal;
-
-import org.junit.jupiter.api.Test;
-
 import com.tidewater.freight.shipment.ServiceLevel;
 import com.tidewater.freight.shipment.Shipment;
 import com.tidewater.freight.tariff.InMemoryTariffRepository;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 class ShippingCalculatorCharacterisationTest {
 
