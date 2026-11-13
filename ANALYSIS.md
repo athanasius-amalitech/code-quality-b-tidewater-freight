@@ -197,3 +197,53 @@ flowchart TD
 - **Fail loudly and specifically.** Custom exceptions (for example `UnknownZoneException`, `InvalidShipmentException`) instead of `0`.
 - **Use `BigDecimal` for money**, and move printing out of the calculation.
 - **Rewrite the tests** to assert exact prices, every rule, both boundaries and every failure, and confirm with PIT.
+
+## 8. Status after the refactor
+
+Sections 1 to 7 are unchanged since they were first committed (`e1b4790`). Their
+line links point at the starter code: open them at that commit to see the lines.
+Decisions and trade-offs are in [RATIONALE.md](RATIONALE.md).
+
+### 8.1 Code problems
+
+| # | Problem | Status | How |
+|---|---|---|---|
+| 3.1 | Catch-all returns `0` | $\color{green}\textsf{Resolved}$ | Catch removed; an unknown zone throws `UnknownZoneException` (`806acd8`) |
+| 3.2 | `calculateCost` does six jobs | $\color{darkgoldenrod}\textsf{Mostly\ resolved}$ | Printing, zone fees and error policy are gone. Left: tariff lookup, heavy surcharge, service level, rounding |
+| 3.3 | Zone rules split, `if/else` chain | $\color{green}\textsf{Resolved}$ | One `FlatRateTariff` per zone behind `ZoneTariff` (`9e5ccf3`) |
+| 3.4 | Rate source hard-wired | $\color{green}\textsf{Resolved}$ | `TariffRepository` injected through the constructor (`bfedefa`) |
+| 3.5 | No input validation | $\color{green}\textsf{Resolved}$ | `Shipment` record rejects bad input on construction (`d1fc7fa`) |
+| 3.6 | Free-string zone and service level | $\color{darkgoldenrod}\textsf{Partial}$ | `ServiceLevel` enum (`94745e7`). Zones stay strings by decision (RATIONALE 1.7); unknown ones throw |
+| 3.7 | Money as `double` | $\color{green}\textsf{Resolved}$ | `BigDecimal`, rounded `HALF_UP` to two places (`d3f55ec`, `cd6074f`, `913d121`) |
+| 3.8 | Console output in business logic | $\color{green}\textsf{Resolved}$ | Removed from the calculator (`53404b8`) |
+| 3.9 | Unstated business rules | $\color{darkgoldenrod}\textsf{Partial}$ | Both rules pinned by tests; awaiting business sign-off (RATIONALE 4) |
+| 3.10 | Magic numbers | $\color{green}\textsf{Resolved}$ | Named constants (`28a7ace`, `03fc427`); Checkstyle now blocks new ones |
+| 3.11 | Generic exception | $\color{green}\textsf{Resolved}$ | `UnknownZoneException` and `InvalidShipmentException` under `ShippingException` |
+| 3.12 | Three parameters | $\color{green}\textsf{Resolved}$ | `calculateCost(Shipment)` |
+| 3.13 | *What* comments, empty branch | $\color{green}\textsf{Resolved}$ | Went with the `if/else` chain |
+| 3.14 | Vague `repository` | $\color{green}\textsf{Resolved}$ | Now `tariffRepository` |
+| 3.15 | Long, aligned `Demo` lines | $\color{green}\textsf{Resolved}$ | Formatted at 100 columns; format and style gates keep it so |
+
+### 8.2 Tests
+
+| Then (section 4) | Now |
+|---|---|
+| `calculatesACost` asserts `cost > 0` | $\color{green}\textsf{Resolved}$ Deleted (`b225945`). Ten characterisation tests assert exact prices |
+| `calculatesExpressCost` mocks the class under test | $\color{green}\textsf{Resolved}$ Deleted. `ShippingCalculatorTest` mocks only `TariffRepository` and checks the real calculator's result |
+| `returnsACostForAShipment` can never fail | $\color{green}\textsf{Resolved}$ Deleted |
+| Nothing tests failure | $\color{green}\textsf{Resolved}$ Unknown zone, missing repository, and every invalid `Shipment` input are tested |
+| Most rules never run | $\color{green}\textsf{Resolved}$ Every fee, the surcharge, express, both 30 kg boundaries and rounding have a test |
+| No isolation | $\color{green}\textsf{Resolved}$ Calculator tested against a mocked repository |
+| Vague names, wildcard imports | $\color{green}\textsf{Resolved}$ Names state the behaviour; Checkstyle blocks wildcards |
+
+### 8.3 The evidence again
+
+| Measure | Section 2 | Now |
+|---|---|---|
+| Tests | 3 | 23, all passing |
+| PIT mutants killed | 3 of 18 (17%) | 8 of 8 (100%), `Demo` excluded |
+| Line coverage | 20 of 33 (61%) | 100% of lines and branches, `Demo` excluded |
+
+Every edge case in section 2 is now rejected with `InvalidShipmentException`, except
+`"express"`, which no longer compiles, and REGIONAL 2.3 kg EXPRESS, which now prices at
+`42.60`. The demo output before and after is in the [README](README.md#what-the-demo-prints).
