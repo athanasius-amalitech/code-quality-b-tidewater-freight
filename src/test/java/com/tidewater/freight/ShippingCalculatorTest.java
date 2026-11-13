@@ -7,9 +7,10 @@ import static org.mockito.Mockito.*;
 
 class ShippingCalculatorTest {
 
+    private final ShippingCalculator calculator = new ShippingCalculator(new InMemoryRateRepository());
+
     @Test
     void calculatesACost() {
-        ShippingCalculator calculator = new ShippingCalculator();
         double cost = calculator.calculateCost("DOMESTIC", 10, "STANDARD");
         assertTrue(cost > 0); // it returned a cost
     }
@@ -24,7 +25,6 @@ class ShippingCalculatorTest {
 
     @Test
     void returnsACostForAShipment() {
-        ShippingCalculator calculator = new ShippingCalculator();
         double cost = calculator.calculateCost("REGIONAL", 5, "STANDARD");
         assertNotNull(cost); // a result came back
     }

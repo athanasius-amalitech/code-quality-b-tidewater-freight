@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class ShippingCalculatorCharacterisationTest {
 
-    private ShippingCalculator calculator;
+    private final ShippingCalculator calculator = new ShippingCalculator(new InMemoryRateRepository());
 
     @Test
     void chargesBaseRateOnlyForDomestic() {
