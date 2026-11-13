@@ -7,7 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.tidewater.freight.exceptions.UnknownZoneException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,5 +32,15 @@ class ShippingCalculatorTest {
         BigDecimal cost = calculator.calculateCost(shipment);
 
         assertEquals(new BigDecimal("21.00"), cost);
+    }
+
+    @Test
+    void letsUnknownZoneFailurePropagate() {
+        when(tariffRepository.findTariff("MOON")).thenThrow(new UnknownZoneException("MOON"));
+
+        ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
+
+        assertThrows(UnknownZoneException.class,
+                () -> calculator.calculateCost(new Shipment("MOON", 10, ServiceLevel.STANDARD)));
     }
 }
