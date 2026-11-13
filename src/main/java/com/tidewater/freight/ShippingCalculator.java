@@ -24,8 +24,7 @@ public class ShippingCalculator {
             cost = cost.add(HEAVY_ITEM_SURCHARGE);
         }
 
-        cost = shipment.serviceLevel().applyTo(cost);
-
-        return cost;
+        return shipment.serviceLevel().applyTo(cost)
+                .setScale(PRICE_DECIMAL_PLACES, RoundingMode.HALF_UP);
     }
 }

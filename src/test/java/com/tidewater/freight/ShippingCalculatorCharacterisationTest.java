@@ -76,11 +76,18 @@ class ShippingCalculatorCharacterisationTest {
     }
 
     @Test
-    void roundsPriceToTwoDecimalPlaces() {
+    void pricesWithoutFloatingPointError() {
         BigDecimal cost = calculator
                 .calculateCost(new Shipment("REGIONAL", 2.3, ServiceLevel.EXPRESS));
 
         assertEquals(new BigDecimal("42.60"), cost);
     }
 
+    @Test
+    void roundsPriceWithThreeDecimalsToTwo() {
+        BigDecimal cost = calculator
+                .calculateCost(new Shipment("REGIONAL", 3.33, ServiceLevel.EXPRESS));
+
+        assertEquals(new BigDecimal("54.96"), cost);
+    }
 }
