@@ -4,7 +4,6 @@ import com.tidewater.freight.exceptions.ShippingException;
 
 public class Demo {
     public static void main(String[] args) {
-
         TariffRepository tariffRepository = new InMemoryTariffRepository();
         ShippingCalculator calculator = new ShippingCalculator(tariffRepository);
 

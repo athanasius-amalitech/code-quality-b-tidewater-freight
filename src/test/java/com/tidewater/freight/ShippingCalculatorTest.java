@@ -1,5 +1,9 @@
 package com.tidewater.freight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
@@ -9,10 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.tidewater.freight.exceptions.UnknownZoneException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ShippingCalculatorTest {
 
@@ -21,7 +21,6 @@ class ShippingCalculatorTest {
 
     @Test
     void pricesWithTariffFromRepository() {
-
         when(tariffRepository.findTariff("DOMESTIC"))
                 .thenReturn(new FlatRateTariff(new BigDecimal("2"), new BigDecimal("1")));
 
@@ -42,5 +41,10 @@ class ShippingCalculatorTest {
 
         assertThrows(UnknownZoneException.class,
                 () -> calculator.calculateCost(new Shipment("MOON", 10, ServiceLevel.STANDARD)));
+    }
+
+    @Test
+    void rejectsMissingRepository() {
+        assertThrows(NullPointerException.class, () -> new ShippingCalculator(null));
     }
 }
