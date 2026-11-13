@@ -1,48 +1,81 @@
-# Tidewater Freight — Shipping Cost Service
+# Tidewater Freight: Shipping Cost Service
 
-This is the starter repository for the **Code Quality & Testing** applied lab.
-Read the lab brief alongside this repository; it explains the business, what you
-are being asked to deliver, and how your work is assessed.
+Prices a shipment from its zone, weight and service level. The starter version was
+AI-written: it priced errors at GHS 0 and its tests could not fail. This version
+fails loudly, prices in `BigDecimal`, and is guarded by four build gates.
 
-## What this is
-
-A small shipping-cost service that was written quickly with an AI assistant, together with the
-tests it produced. Everything compiles and the tests pass, so at a glance it
-looks finished. Your job is to bring it up to AmaliTech standard: judge what is
-actually wrong with the code **and** its tests, refactor it, make it genuinely
-testable, handle its failures properly, and replace the tests that only look
-like tests.
+- [ANALYSIS.md](ANALYSIS.md): what was wrong, ranked, written before any change.
+- [RATIONALE.md](RATIONALE.md): the decisions, how a new zone slots in, what was kept, fixed and rewritten.
 
 ## Running it
 
-You need JDK 21 and Maven.
+JDK 21 and Maven. The commands work as written in PowerShell, cmd and bash.
 
-**See the service run (a small demo, no tests):**
-
-```bash
-mvn compile
-mvn exec:java -Dexec.mainClass=com.tidewater.freight.demo.Demo
-```
-
-**Run the existing tests:**
+Demo:
 
 ```bash
-mvn test
+mvn compile exec:java
 ```
 
-**Measure your tests** (coverage and mutation testing are already set up):
+Build with every gate (tests, coverage, mutation testing, style, format):
 
 ```bash
-mvn verify                                                  # tests + JaCoCo report: target/site/jacoco/index.html
-mvn test-compile org.pitest:pitest-maven:mutationCoverage   # PIT report: target/pit-reports/index.html
+mvn clean verify
 ```
 
-Run the demo and the tests before you change anything. Note what the demo prints for an unknown zone,
-and look carefully at whether the tests that pass actually prove anything.
+Fix formatting before a commit:
 
-## What to hand in
+```bash
+mvn formatter:format
+```
 
-See the lab brief for the full list: your written analysis (of the code and the
-tests), the refactored code, robust exception handling, a real test suite, a
-short rationale, and one improvement beyond the brief. You will talk through your
-work in a live review.
+Reports after `mvn verify`: `target/site/jacoco/index.html` (coverage) and
+`target/pit-reports/index.html` (mutation testing).
+
+## What the demo prints
+
+Prices keep their values, now with two decimals. The unknown zone fails instead of
+costing 0. The calculator no longer prints its own lines.
+
+```diff
+- Shipping DOMESTIC (10.0kg, STANDARD): GHS 50.0
+- Result DOMESTIC 10kg STANDARD       -> 50.0
++ Result DOMESTIC 10kg STANDARD       -> 50.00
+- Shipping INTERNATIONAL (40.0kg, EXPRESS): GHS 967.5
+- Result INTERNATIONAL 40kg EXPRESS   -> 967.5
++ Result INTERNATIONAL 40kg EXPRESS   -> 967.50
+- Result unknown zone MOON 10kg STD   -> 0.0
++ Could not price shipment: Unknown zone: MOON
+```
+
+## Code layout
+
+Packages by feature, under `com.tidewater.freight`.
+
+| Package | Contents | Job |
+|---|---|---|
+| (root) | `ShippingException` | Base of every failure, so a caller can catch them all in one place |
+| `shipment` | `Shipment`, `ServiceLevel`, `InvalidShipmentException` | What is being sent; rejects bad input on construction |
+| `tariff` | `ZoneTariff`, `FlatRateTariff`, `TariffRepository`, `InMemoryTariffRepository`, `UnknownZoneException` | What each zone charges |
+| `pricing` | `ShippingCalculator` | Tariff, heavy surcharge, service level, rounding |
+| `demo` | `Demo` | Example run; excluded from coverage and mutation gates |
+
+## Build gates
+
+`mvn verify` fails if any of these fails. Details in [RATIONALE.md](RATIONALE.md#6-improvement-beyond-the-brief-the-standard-enforces-itself).
+
+| Gate | Checks |
+|---|---|
+| Format | Every file matches the shared [AmaliTech formatter profile](https://github.com/athanasius-amalitech/vscode-java-formatter) |
+| Style | Checkstyle rules from the standard, in [config/checkstyle.xml](config/checkstyle.xml) |
+| Coverage | 100% of lines and branches |
+| Mutation | At least 90% of PIT mutants killed |
+
+## Adding a zone
+
+| Zone prices like... | Change |
+|---|---|
+| The others (rate per kg plus a fee) | One `tariffs.put(...)` line in `InMemoryTariffRepository` |
+| Something new | A class that `implements ZoneTariff`, registered the same way |
+
+Add a test with the agreed price. The calculator does not change.
