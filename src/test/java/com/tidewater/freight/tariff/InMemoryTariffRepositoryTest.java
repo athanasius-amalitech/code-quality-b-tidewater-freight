@@ -14,6 +14,6 @@ class InMemoryTariffRepositoryTest {
         UnknownZoneException exception = assertThrows(UnknownZoneException.class,
                 () -> tariffRepository.findTariff("MOON"));
 
-        assertEquals("MOON", exception.getZone());
+        assertEquals("MOON", exception.zone());
     }
 }

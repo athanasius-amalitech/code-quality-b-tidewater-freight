@@ -11,7 +11,7 @@ public class UnknownZoneException extends ShippingException {
         this.zone = zone;
     }
 
-    public String getZone() {
+    public String zone() {
         return zone;
     }
 }
